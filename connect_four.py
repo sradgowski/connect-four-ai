@@ -1,6 +1,7 @@
 from copy import deepcopy
-import time
 import random
+import time
+
 random.seed(108)
 
 def print_board(board):
@@ -14,14 +15,13 @@ def print_board(board):
 
     for y in range(len(board[0])):
         print('|   |' + ('   |' * (len(board) - 1)))
-
         print('|', end='')
+        
         for x in range(len(board)):
             print(' %s |' % board[x][y], end='')
+            
         print()
-
         print('|   |' + ('   |' * (len(board) - 1)))
-
         print('+---+' + ('---+' * (len(board) - 1)))
 
 def select_space(board, column, player):
@@ -29,10 +29,12 @@ def select_space(board, column, player):
         return False
     if player != "X" and player != "O":
         return False
+    
     for y in range(len(board[0])-1, -1, -1):
         if board[column-1][y] == ' ':
             board[column-1][y] = player
             return True
+        
     return False
 
 def board_is_full(board):
@@ -53,34 +55,34 @@ def move_is_valid(board, move):
 
 def available_moves(board):
     moves = []
-    for i in range(1, len(board)+1):
+    for i in range(1, len(board) + 1):
         if move_is_valid(board, i):
             moves.append(i)
     return moves
 
 def has_won(board, symbol):
-    # check horizontal spaces
+    # Check horizontal spaces
     for y in range(len(board[0])):
         for x in range(len(board) - 3):
-            if board[x][y] == symbol and board[x+1][y] == symbol and board[x+2][y] == symbol and board[x+3][y] == symbol:
+            if board[x][y] == symbol and board[x + 1][y] == symbol and board[x + 2][y] == symbol and board[x + 3][y] == symbol:
                 return True
 
-    # check vertical spaces
+    # Check vertical spaces
     for x in range(len(board)):
         for y in range(len(board[0]) - 3):
-            if board[x][y] == symbol and board[x][y+1] == symbol and board[x][y+2] == symbol and board[x][y+3] == symbol:
+            if board[x][y] == symbol and board[x][y + 1] == symbol and board[x][y + 2] == symbol and board[x][y + 3] == symbol:
                 return True
 
-    # check / diagonal spaces
+    # Check / diagonal spaces
     for x in range(len(board) - 3):
         for y in range(3, len(board[0])):
-            if board[x][y] == symbol and board[x+1][y-1] == symbol and board[x+2][y-2] == symbol and board[x+3][y-3] == symbol:
+            if board[x][y] == symbol and board[x + 1][y - 1] == symbol and board[x + 2][y - 2] == symbol and board[x + 3][y - 3] == symbol:
                 return True
 
-    # check \ diagonal spaces
+    # Check \ diagonal spaces
     for x in range(len(board) - 3):
         for y in range(len(board[0]) - 3):
-            if board[x][y] == symbol and board[x+1][y+1] == symbol and board[x+2][y+2] == symbol and board[x+3][y+3] == symbol:
+            if board[x][y] == symbol and board[x + 1][y + 1] == symbol and board[x + 2][y + 2] == symbol and board[x + 3][y + 3] == symbol:
                 return True
 
     return False
@@ -105,7 +107,8 @@ def count_streaks(board, symbol):
         for row in range(len(board[0])):
             if board[col][row] != symbol:
                 continue
-            # right
+                
+            # Right
             if col < len(board) - 3:
                 num_in_streak = 0
                 for i in range(4):
@@ -115,7 +118,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #left
+                
+            # Left
             if col > 2:
                 num_in_streak = 0
                 for i in range(4):
@@ -125,7 +129,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #up-right
+                
+            # Up-right
             if col < len(board) - 3 and row > 2:
                 num_in_streak = 0
                 for i in range(4):
@@ -135,7 +140,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #down-right
+                
+            # Down-right
             if col < len(board) - 3 and row < len(board[0]) - 3:
                 num_in_streak = 0
                 for i in range(4):
@@ -145,7 +151,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #down-left
+                
+            # Down-left
             if col > 2 and row < len(board[0]) - 3:
                 num_in_streak = 0
                 for i in range(4):
@@ -155,7 +162,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #up-left
+                
+            # Up-left
             if col > 2 and row > 2:
                 num_in_streak = 0
                 for i in range(4):
@@ -165,7 +173,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #down-left
+                
+            # Down-left
             if col > 2 and row < len(board[0]) - 3:
                 num_in_streak = 0
                 for i in range(4):
@@ -175,7 +184,8 @@ def count_streaks(board, symbol):
                         num_in_streak = 0
                         break
                 count += num_in_streak
-            #down
+                
+            # Down
             num_in_streak = 0
             if row < len(board[0]) - 3:
                 for i in range(4):
@@ -196,11 +206,13 @@ def count_streaks(board, symbol):
                 if num_in_streak + row < 4:
                     num_in_streak = 0
             count += num_in_streak
+            
     return count
 
 def minimax(input_board, is_maximizing, depth, alpha, beta, eval_function=evaluate_board):
   if game_is_over(input_board) or depth == 0:
         return [eval_function(input_board), ""]
+    
   if is_maximizing:
     best_value = -float("Inf")
     moves = available_moves(input_board)
@@ -217,6 +229,7 @@ def minimax(input_board, is_maximizing, depth, alpha, beta, eval_function=evalua
       if alpha >= beta:
         break
     return [best_value, best_move]
+
   else:
     best_value = float("Inf")
     moves = available_moves(input_board)
@@ -264,11 +277,13 @@ def play_game():
     elif answer.lower() not in all_responses:
         print("Response not recognized. You will be punished with extra difficulty.")
         ai = 6
+        
     board = make_board()
     while not game_is_over(board):
         print_board(board)
         moves = available_moves(board)
         print("Available moves: " , moves)
+        
         choice = 100
         good_move = False
         while not good_move:
@@ -279,20 +294,26 @@ def play_game():
                 continue
             if move in moves:
                 good_move = True
+                
         select_space(board, int(choice), "X")
         print_board(board)
+        
         print("Computer thinking...")
-        time.sleep(1.0)
+        time.sleep(1.0) # Really just for the human player to process what's going on...
+        
         if not game_is_over(board):
           result = minimax(board, False, ai, -float("Inf"), float("Inf"))
           print("Computer chose: ", result[1])
           select_space(board, result[1], "O")
+        
     if has_won(board, "X"):
         print_board(board)
         print("You won!")
+        
     elif has_won(board, "O"):
         print_board(board)
         print("The computer won!")
+        
     else:
         print_board(board)
         print("It's a tie!")
@@ -302,6 +323,7 @@ def two_ai_game():
     if answer.lower() in ["yes", "y", "yup", "yep", "mhm", "duh"]:
         x_smart = 4
         o_smart = 4
+        
     if answer.lower() in ["no", "n", "nope", "no thanks"]:
         answer2 = input("""How much smarter should bot number one be?
         A. A little smarter
@@ -317,19 +339,22 @@ def two_ai_game():
         if answer2.lower() in ["c", "c.", "choice c"]:
             x_smart = 4
             o_smart = 1
+            
     my_board = make_board()
+    
     while not game_is_over(my_board):
-      #The "X" player finds their best move.
+      # The "X" player finds their best move.
       result = minimax(my_board, True, x_smart, -float("Inf"), float("Inf"), evaluate_board)
       print( "X Turn\nX selected ", result[1])
       print(result[1])
+        
       select_space(my_board, result[1], "X")
       print_board(my_board)
 
       time.sleep(2.0)
     
       if not game_is_over(my_board):
-        #The "O" player finds their best move
+        # The "O" player finds their best move
         result = minimax(my_board, False, o_smart, -float("Inf"), float("Inf"), evaluate_board)
         print( "O Turn\nO selected ", result[1])
         print(result[1])
@@ -340,10 +365,12 @@ def two_ai_game():
 
     if has_won(my_board, "X"):
         print("X won!")
+        
     elif has_won(my_board, "O"):
         print("O won!")
+        
     else:
         print("It's a tie!")
 
-play_game()
-
+if __name__ == "__main__":
+    play_game()
